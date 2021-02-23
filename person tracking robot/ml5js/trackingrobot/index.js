@@ -1,11 +1,15 @@
 const express = require('express')
 const app = express()
-const port = 3000
+const appPort = 3000
 const path = require('path');
+
+const SerialPort = require('serialport');
+const port = new SerialPort('/dev/ttyS8');
+
 app.use(express.static('public'))
 app.get('/', (req, res) => {
-  res.sendFile(path.resolve('public/posenet.html'));
+	res.sendFile(path.resolve('public/posenet.html'));
 })
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+app.listen(appPort, () => {
+	console.log(`Example app listening at http://localhost:${appPort}`)
 })
