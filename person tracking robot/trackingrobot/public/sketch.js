@@ -8,73 +8,103 @@ ml5 Example
 PoseNet example using p5.js
 === */
 
-let video;
-let poseNet;
-let poses = [];
+let video
+let poseNet
+let poses = []
 
-function setup() {
-	// console.log(USB.getDevices());
+function setup () {
+  //socket setup:
+  var socket = io()
+  socket.emit('frontcam', 'client socket connected')
 
-  createCanvas(640, 480);
-  video = createCapture(VIDEO);
-  video.size(width, height);
+  //ml5 setup
+  createCanvas(640, 480)
+  video = createCapture(VIDEO)
+  video.size(width, height)
 
   // Create a new poseNet method with a single detection
-  poseNet = ml5.poseNet(video, modelReady);
-  poseNet.multiplier = 1.01;
+  poseNet = ml5.poseNet(
+    video,
+    {
+      detectionType: 'single',
+      minConfidence: 0.9,
+      scoreThreshold: 0.9
+    },
+    modelReady
+  )
   // This sets up an event that fills the global variable "poses"
-  // with an array every time new poses are detected
-  poseNet.on("pose", function(results) {
-	  console.log(results);
-    poses = results;
-  });
+  //// with an array every time new poses are detected
+
+  var count = 0
+  poseNet.on('pose', function (results) {
+	  let poseList = results[0].pose;
+    //as i dont know how to slow this down i temperarly use this count hack
+    if (count >= 30) {
+      //updates the poses field for the canvas drawing
+      poses = results;
+
+	  socket.emit('frontcam', {
+		  leftShoulder: {x: poseList.leftShoulder.x, y: poseList.leftShoulder.y},
+		  leftElbow: {x: poseList.rightShoulder.x, y: poseList.rightShoulder.y}
+	  });
+      count = 0;
+    } else {
+      count++;
+    }
+  })
+
   // Hide the video element, and just show the canvas
   video.hide();
 }
 
-function modelReady() {
-  select("#status").html("Model Loaded");
+function modelReady () {
+  select('#status').html('Model Loaded')
 }
 
-function draw() {
-  image(video, 0, 0, width, height);
+function draw () {
+  image(video, 0, 0, width, height)
 
   // We can call both functions to draw all keypoints and the skeletons
-  drawKeypoints();
-  drawSkeleton();
+  drawKeypoints()
+  drawSkeleton()
 }
 
 // A function to draw ellipses over the detected keypoints
-function drawKeypoints() {
+function drawKeypoints () {
   // Loop through all the poses detected
   for (let i = 0; i < poses.length; i += 1) {
     // For each pose detected, loop through all the keypoints
-    const pose = poses[i].pose;
+    const pose = poses[i].pose
     for (let j = 0; j < pose.keypoints.length; j += 1) {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
-      const keypoint = pose.keypoints[j];
+      const keypoint = pose.keypoints[j]
       // Only draw an ellipse is the pose probability is bigger than 0.2
-      if (keypoint.score > 0.9) {
-		// console.log(keypoint.position.x);
-        fill(255, 0, 0);
-        noStroke();
-        ellipse(keypoint.position.x, keypoint.position.y, 10, 10);
-      }
+      //   if (keypoint.score > 0.9) {
+      // console.log(keypoint.position.x);
+      fill(255, 0, 0)
+      noStroke()
+      ellipse(keypoint.position.x, keypoint.position.y, 10, 10)
+      //   }
     }
   }
 }
 
 // A function to draw the skeletons
-function drawSkeleton() {
+function drawSkeleton () {
   // Loop through all the skeletons detected
   for (let i = 0; i < poses.length; i += 1) {
-    const skeleton = poses[i].skeleton;
+    const skeleton = poses[i].skeleton
     // For every skeleton, loop through all body connections
     for (let j = 0; j < skeleton.length; j += 1) {
-      const partA = skeleton[j][0];
-      const partB = skeleton[j][1];
-      stroke(255, 0, 0);
-      line(partA.position.x, partA.position.y, partB.position.x, partB.position.y);
+      const partA = skeleton[j][0]
+      const partB = skeleton[j][1]
+      stroke(255, 0, 0)
+      line(
+        partA.position.x,
+        partA.position.y,
+        partB.position.x,
+        partB.position.y
+      )
     }
   }
 }
