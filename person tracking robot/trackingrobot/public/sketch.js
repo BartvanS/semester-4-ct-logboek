@@ -15,7 +15,7 @@ let poses = []
 function setup () {
   //socket setup:
   var socket = io()
-  socket.emit('frontcam', 'client socket connected')
+//   socket.emit('frontcam', 'client socket connected')
 
   //ml5 setup
   createCanvas(640, 480)
@@ -37,24 +37,42 @@ function setup () {
 
   var count = 0
   poseNet.on('pose', function (results) {
-	  let poseList = results[0].pose;
+    let poseList = results[0].pose
     //as i dont know how to slow this down i temperarly use this count hack
     if (count >= 30) {
       //updates the poses field for the canvas drawing
-      poses = results;
-
-	  socket.emit('frontcam', {
-		  leftShoulder: {x: poseList.leftShoulder.x, y: poseList.leftShoulder.y},
-		  leftElbow: {x: poseList.rightShoulder.x, y: poseList.rightShoulder.y}
-	  });
-      count = 0;
+      poses = results
+//todo: kijken hoe het nou zit met die coordinaten, begint het van linksboven of zit het anders? convergence klopt hierdoor niet en daardoor de afstanden ook niet
+      socket.emit('frontcam', {
+        left: {
+          shoulder: {
+            x: poseList.leftShoulder.x,
+            y: poseList.leftShoulder.y
+          },
+          elbow: {
+            x: poseList.leftElbow.x,
+            y: poseList.leftElbow.y
+          }
+        },
+		right: {
+			shoulder: {
+			  x: poseList.rightShoulder.x,
+			  y: poseList.rightShoulder.y
+			},
+			elbow: {
+			  x: poseList.rightElbow.x,
+			  y: poseList.rightElbow.y
+			}
+		  }
+      })
+      count = 0
     } else {
-      count++;
+      count++
     }
   })
 
   // Hide the video element, and just show the canvas
-  video.hide();
+  video.hide()
 }
 
 function modelReady () {
