@@ -25,9 +25,9 @@ function setup () {
   poseNet = ml5.poseNet(
     video,
     {
-      detectionType: 'single',
-      minConfidence: 0.9,
-      scoreThreshold: 0.9
+      detectionType: 'single'
+      //   minConfidence: 0.9,
+      //   scoreThreshold: 0.9
     },
     modelReady
   )
@@ -37,8 +37,8 @@ function setup () {
   var count = 0
   poseNet.on('pose', function (results) {
     //as i dont know how to slow this down i temperarly use this count hack
-    if (count >= 50) {
-      let poseList = results[0].pose
+    let poseList = results[0].pose
+    if (count >= 25 && confidenceTest(poseList)) {
       console.log(results)
       //updates the poses field for the canvas drawing
       poses = results
@@ -83,6 +83,15 @@ function setup () {
   // Hide the video element, and just show the canvas
   video.hide()
 }
+function confidenceTest (poseList) {
+  let minScore = 0.9
+  return (
+    poseList.leftShoulder.confidence > minScore &&
+    poseList.leftElbow.confidence > minScore &&
+    poseList.rightShoulder.confidence > minScore &&
+    poseList.rightElbow.confidence > minScore
+  )
+}
 
 function modelReady () {
   select('#status').html('Model Loaded')
@@ -105,12 +114,12 @@ function drawKeypoints () {
       // A keypoint is an object describing a body part (like rightArm or leftShoulder)
       const keypoint = pose.keypoints[j]
       // Only draw an ellipse is the pose probability is bigger than 0.2
-      //   if (keypoint.score > 0.9) {
-      // console.log(keypoint.position.x);
-      fill(255, 0, 0)
-      noStroke()
-      ellipse(keypoint.position.x, keypoint.position.y, 10, 10)
-      //   }
+      if (keypoint.score > 0.9) {
+        // console.log(keypoint.position.x);
+        fill(255, 0, 0)
+        noStroke()
+        ellipse(keypoint.position.x, keypoint.position.y, 10, 10)
+      }
     }
   }
 }

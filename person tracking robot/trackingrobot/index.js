@@ -60,23 +60,23 @@ function handleCalculations (data) {
 
 //fixme: wrist not working very well.... probably bad data going in. also 
 function calculateSides (data) {
-  // arms in t pose angle = 0
-  //both directions up and down are both positive between 0 and 90 because the abs funciton
+  // arms in down 0 deg up 180 deg
+
   let left = data.left
   //left shoulder to elbow lengths
-  let ShCoLeft = Math.abs(left.convergenceElbow.y - left.shoulder.y) // Shoulder to convergenceElbow in height
-  let CoElLeft = Math.abs(left.convergenceElbow.x - left.elbow.x) // convergenceElbow to Elbow
+  let ShCoLeft = (left.convergenceElbow.y - left.shoulder.y) // Shoulder to convergenceElbow in height
+  let CoElLeft = (left.convergenceElbow.x - left.elbow.x) // convergenceElbow to Elbow
   //left elbow to wrist lenghts
-  let ShCwLeft = Math.abs(left.convergenceWrist.y - left.shoulder.y) // shoulder to convergenceWrist in height
-  let CwWrLeft = Math.abs(left.convergenceWrist.x - left.wrist.x) // convergenceWrist to wrist
+  let ShCwLeft = (left.convergenceWrist.y - left.shoulder.y) // shoulder to convergenceWrist in height
+  let CwWrLeft = (left.convergenceWrist.x - left.wrist.x) // convergenceWrist to wrist
 
   let right = data.right
   //left shoulder to elbow lengths
-  let SoCoRight = Math.abs(right.convergenceElbow.y - right.shoulder.y) // Shoulder to convergenceElbow in height
-  let CoElRight = Math.abs(right.elbow.x - right.convergenceElbow.x) // convergenceElbow to Elbow
+  let SoCoRight = (right.convergenceElbow.y - right.shoulder.y) // Shoulder to convergenceElbow in height
+  let CoElRight = (right.elbow.x - right.convergenceElbow.x) // convergenceElbow to Elbow
   //left elbow to wrist lenghts
-  let ShCwRight = Math.abs(right.convergenceWrist.y - right.shoulder.y) // shoulder to convergenceWrist in height
-  let CwWrRight = Math.abs(right.wrist.x - right.convergenceWrist.x) // convergenceWrist to wrist
+  let ShCwRight = (right.convergenceWrist.y - right.shoulder.y) // shoulder to convergenceWrist in height
+  let CwWrRight = (right.wrist.x - right.convergenceWrist.x) // convergenceWrist to wrist
 let sides = {
     left: {
       ShCo: ShCoLeft,
@@ -98,14 +98,14 @@ function calculateDegreesObj (data) {
   let right = data.right
   let angles = {
     left: {
-      shoulderX: calculateDegrees(left.ShCo, left.CoEl),
+      shoulderX: calculateDegrees(left.ShCo, left.CoEl) + 90,
       //shoulderX is for the frontal 2d side movement. z is for depth that might be added later on
       //   shoulderZ:,
-      elbow: calculateDegrees(left.ShCw, left.CwWr)
+      elbow: calculateDegrees(left.ShCw, left.CwWr) + 90
     },
     right: {
-      shoulderX: calculateDegrees(right.ShCo, right.CoEl),
-      elbow: calculateDegrees(right.ShCw, right.CwWr)
+      shoulderX: calculateDegrees(right.ShCo, right.CoEl) + 90,
+      elbow: calculateDegrees(right.ShCw, right.CwWr) + 90
     }
   }
   return angles
