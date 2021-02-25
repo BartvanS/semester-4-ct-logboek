@@ -84,7 +84,7 @@ function setup () {
   video.hide()
 }
 function confidenceTest (poseList) {
-  let minScore = 0.9
+  let minScore = 0.7
   return (
     poseList.leftShoulder.confidence > minScore &&
     poseList.leftElbow.confidence > minScore &&
