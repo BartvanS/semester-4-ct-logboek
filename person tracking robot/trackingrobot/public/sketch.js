@@ -27,7 +27,7 @@ function setup () {
     {
       detectionType: 'single',
       minConfidence: 0.9,
-      scoreThreshold: 0.9,
+      scoreThreshold: 0.9
     },
     modelReady
   )
@@ -52,6 +52,10 @@ function setup () {
           elbow: {
             x: poseList.leftElbow.x,
             y: poseList.leftElbow.y
+          },
+          wrist: {
+            x: poseList.leftWrist.x,
+            y: poseList.leftWrist.y
           }
         },
         right: {
@@ -62,6 +66,10 @@ function setup () {
           elbow: {
             x: poseList.rightElbow.x,
             y: poseList.rightElbow.y
+          },
+          wrist: {
+            x: poseList.rightWrist.x,
+            y: poseList.rightWrist.y
           }
         }
       }
