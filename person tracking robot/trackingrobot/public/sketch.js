@@ -15,7 +15,6 @@ let poses = []
 function setup () {
   //socket setup:
   var socket = io()
-//   socket.emit('frontcam', 'client socket connected')
 
   //ml5 setup
   createCanvas(640, 480)
@@ -28,22 +27,23 @@ function setup () {
     {
       detectionType: 'single',
       minConfidence: 0.9,
-      scoreThreshold: 0.9
+      scoreThreshold: 0.9,
     },
     modelReady
   )
+  //   poseNet.
   // This sets up an event that fills the global variable "poses"
   //// with an array every time new poses are detected
-
   var count = 0
   poseNet.on('pose', function (results) {
-    let poseList = results[0].pose
     //as i dont know how to slow this down i temperarly use this count hack
-    if (count >= 30) {
+    if (count >= 50) {
+      let poseList = results[0].pose
+      console.log(results)
       //updates the poses field for the canvas drawing
       poses = results
-//todo: kijken hoe het nou zit met die coordinaten, begint het van linksboven of zit het anders? convergence klopt hierdoor niet en daardoor de afstanden ook niet
-      socket.emit('frontcam', {
+      //todo: kijken hoe het nou zit met die coordinaten, begint het van linksboven of zit het anders? convergence klopt hierdoor niet en daardoor de afstanden ook niet
+      let coordinates = {
         left: {
           shoulder: {
             x: poseList.leftShoulder.x,
@@ -54,17 +54,18 @@ function setup () {
             y: poseList.leftElbow.y
           }
         },
-		right: {
-			shoulder: {
-			  x: poseList.rightShoulder.x,
-			  y: poseList.rightShoulder.y
-			},
-			elbow: {
-			  x: poseList.rightElbow.x,
-			  y: poseList.rightElbow.y
-			}
-		  }
-      })
+        right: {
+          shoulder: {
+            x: poseList.rightShoulder.x,
+            y: poseList.rightShoulder.y
+          },
+          elbow: {
+            x: poseList.rightElbow.x,
+            y: poseList.rightElbow.y
+          }
+        }
+      }
+      socket.emit('frontcam', coordinates)
       count = 0
     } else {
       count++
@@ -81,7 +82,6 @@ function modelReady () {
 
 function draw () {
   image(video, 0, 0, width, height)
-
   // We can call both functions to draw all keypoints and the skeletons
   drawKeypoints()
   drawSkeleton()

@@ -28,59 +28,71 @@ app.use(express.static('public'))
 app.get('/', (req, res) => {
   res.sendFile(path.resolve('public/posenet.html'))
 })
+http.listen(appPort, () => {
+  console.log(`Example app listening at http://localhost:${appPort}`)
+})
 
 //sockets
 io.on('connection', socket => {
   console.log('socket connected')
   socket.on('frontcam', msg => {
     let data = { ...msg }
-   let degrees = calculateDegrees(data)
-
-    console.log(degrees)
+    let angles = handleCalculations(data)
+    console.log(angles)
   })
   socket.on('disconnect', reason => {
     console.log('socket disconnected')
   })
 })
-
-http.listen(appPort, () => {
-  console.log(`Example app listening at http://localhost:${appPort}`)
-})
-
-function calculateDegrees (data) {
-  let coordinates = calculateConvergence(data)
-  let distances = calculateDistances(coordinates)
-  //todo: degrees....
-  return distances;
-}
-function calculateConvergence (data) {
+function handleCalculations (data) {
   let left = data.left
   let right = data.right
-  //calculate convergence point
   left.convergence = { x: left.shoulder.x, y: left.elbow.y }
   right.convergence = { x: right.shoulder.x, y: right.elbow.y }
-  return data;
+  let sides = calculateSides(data)
+  let angles = calculateDegreesObj(sides)
+  return angles
 }
-function calculateDistances (coordinates) {
-	//fixme:.... im so tired
-  let left = coordinates.left
-  let scLeft = left.convergence.y - left.shoulder.y
-  let ceLeft = left.convergence.x - left.elbow.x
-  let seLeft = Math.sqrt(
-    left.shoulder.x * left.shoulder.x + left.elbow.x * left.elbow.x
-  )
-//todo: right
-//   let right = coordinates.right
-//   let scRight = right.convergence.y - right.shoulder.y
 
-
-  let distances = {
+function calculateSides (data) {
+	//todo: arms in t pose angle = 0
+	//both directions up and down are both positive between 0 and 90 because the abs funciton
+  //Math.abs() if it needs to be always a positive number
+  let left = data.left
+  let SoCoLeft = Math.abs(left.convergence.y - left.shoulder.y)
+  let CoElLeft = Math.abs(left.convergence.x - left.elbow.x)
+  let right = data.right
+  let SoCoRight = Math.abs(right.convergence.y - right.shoulder.y)
+  let CoElRight = Math.abs(right.elbow.x - right.convergence.x)
+  let sides = {
     left: {
-      sc: scLeft,
-	  ce: ceLeft,
-	  se: seLeft,
+      SoCo: SoCoLeft,
+      CoEl: CoElLeft
     },
-    right: {}
+    right: {
+      SoCo: SoCoRight,
+      CoEl: CoElRight
+    }
   }
-  return distances;
+  return sides
+}
+function calculateDegreesObj (data) {
+  let left = data.left
+  let right = data.right
+  let angles = {
+    left: {
+      shoulderX: calculateDegrees(left.SoCo, left.CoEl)
+      //shoulderX is for the frontal 2d side movement. z is for depth that might be added later on
+      //   shoulderZ:,
+      //   elbow: calculateDegrees(left.elbow.x, left.elbow.y)
+    },
+    right: {
+      shoulderX: calculateDegrees(right.SoCo, right.CoEl)
+      //   elbow: calculateDegrees(right.elbow.x, right.elbow.y)
+    }
+  }
+  return angles
+}
+function calculateDegrees (opposite, adjacent) {
+  return (Math.atan(opposite / adjacent) * 180) / Math.PI
 }
