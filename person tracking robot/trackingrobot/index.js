@@ -14,18 +14,18 @@ app.get('/', (req, res) => {
 http.listen(appPort, () => {
   console.log(`Example app listening at http://localhost:${appPort}`)
 })
-
+mySerial.writeToPort('#ls:0xx');
 //sockets
 io.on('connection', socket => {
   console.log('socket connected')
   socket.on('frontcam', msg => {
     let data = { ...msg }
     let angles = calc.handleCalculations(data)
-    console.log(angles)
-	mySerial.writeToPort("HIGH\n")
-	setTimeout(function(){
-		mySerial.writeToPort("LOW\n");
-	}, 500);
+    // console.log(angles)
+	mySerial.writeToPort("#ls:"+angles.left.shoulderX)
+	// setTimeout(function(){
+	// 	mySerial.writeToPort("#ls:00");
+	// }, 500);
   })
   socket.on('disconnect', reason => {
     console.log('socket disconnected')

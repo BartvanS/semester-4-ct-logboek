@@ -1,4 +1,4 @@
-module.exports.handleCalculations = function (data) {
+function handleCalculations (data) {
   let left = data.left
   //convergence is the point where the shoulder y axis comes across the x axis of the other joints(elbow, wrist)
   left.convergenceElbow = { x: left.shoulder.x, y: left.elbow.y }
@@ -12,7 +12,6 @@ module.exports.handleCalculations = function (data) {
   return angles
 }
 
-//fixme: wrist not working very well.... probably bad data going in. also
 function calculateSides (data) {
   // arms in down 0 deg up 180 deg
 
@@ -52,18 +51,40 @@ function calculateDegreesObj (data) {
   let right = data.right
   let angles = {
     left: {
-      shoulderX: calculateDegrees(left.ShCo, left.CoEl) + 90,
+      shoulderX: calculateDegreesFormatted(left.ShCo, left.CoEl) + 90,
       //shoulderX is for the frontal 2d side movement. z is for depth that might be added later on
       //   shoulderZ:,
-      elbow: calculateDegrees(left.ShCw, left.CwWr) + 90
+      elbow: calculateDegreesFormatted(left.ShCw, left.CwWr) + 90
     },
     right: {
-      shoulderX: calculateDegrees(right.ShCo, right.CoEl) + 90,
-      elbow: calculateDegrees(right.ShCw, right.CwWr) + 90
+      shoulderX: calculateDegreesFormatted(right.ShCo, right.CoEl) + 90,
+      elbow: calculateDegreesFormatted(right.ShCw, right.CwWr) + 90
     }
-  } 
+  }
   return angles
+}
+function calculateDegreesFormatted (opposite, adjacent) {
+  return formatDegree(calculateDegrees(opposite, adjacent))
 }
 function calculateDegrees (opposite, adjacent) {
   return Math.round((Math.atan(opposite / adjacent) * 180) / Math.PI)
+}
+
+function formatDegree (degree) {
+  let format = ""
+  if (degree < 100) {
+    format = "x" + degree
+  }
+  if (degree < 10) {
+    format = "xx" + degree
+  } else {
+    format = degree
+  }
+  console.log(format);
+  return format
+}
+
+module.exports = {
+  handleCalculations: data => handleCalculations(data),
+  formatDegree: degree => formatDegree(degree)
 }

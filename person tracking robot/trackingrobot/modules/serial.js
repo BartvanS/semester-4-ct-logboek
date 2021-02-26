@@ -1,4 +1,5 @@
 const SerialPort = require('serialport')
+const calc = require('./calculations.js')
 
 // Open errors will be emitted as an error event
 module.exports = class Serial {

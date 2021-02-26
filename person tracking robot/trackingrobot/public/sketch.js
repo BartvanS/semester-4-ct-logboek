@@ -38,9 +38,8 @@ function setup () {
   poseNet.on('pose', function (results) {
     //as i dont know how to slow this down i temperarly use this count hack
     let poseList = results[0].pose
-    if (count >= 25 && confidenceTest(poseList)) {
-      console.log(results)
-      //updates the poses field for the canvas drawing
+    if ( confidenceTest(poseList)) {
+n      //updates the poses field for the canvas drawing
       poses = results
       //todo: kijken hoe het nou zit met die coordinaten, begint het van linksboven of zit het anders? convergence klopt hierdoor niet en daardoor de afstanden ook niet
       let coordinates = {
@@ -84,7 +83,7 @@ function setup () {
   video.hide()
 }
 function confidenceTest (poseList) {
-  let minScore = 0.7
+  let minScore = 0.65
   return (
     poseList.leftShoulder.confidence > minScore &&
     poseList.leftElbow.confidence > minScore &&
