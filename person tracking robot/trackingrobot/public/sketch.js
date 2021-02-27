@@ -39,7 +39,7 @@ function setup () {
     //as i dont know how to slow this down i temperarly use this count hack
     let poseList = results[0].pose
     if ( confidenceTest(poseList)) {
-n      //updates the poses field for the canvas drawing
+     //updates the poses field for the canvas drawing
       poses = results
       //todo: kijken hoe het nou zit met die coordinaten, begint het van linksboven of zit het anders? convergence klopt hierdoor niet en daardoor de afstanden ook niet
       let coordinates = {
@@ -83,7 +83,7 @@ n      //updates the poses field for the canvas drawing
   video.hide()
 }
 function confidenceTest (poseList) {
-  let minScore = 0.65
+  let minScore = 0.8
   return (
     poseList.leftShoulder.confidence > minScore &&
     poseList.leftElbow.confidence > minScore &&
@@ -114,7 +114,6 @@ function drawKeypoints () {
       const keypoint = pose.keypoints[j]
       // Only draw an ellipse is the pose probability is bigger than 0.2
       if (keypoint.score > 0.9) {
-        // console.log(keypoint.position.x);
         fill(255, 0, 0)
         noStroke()
         ellipse(keypoint.position.x, keypoint.position.y, 10, 10)

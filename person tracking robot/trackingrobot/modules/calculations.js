@@ -51,14 +51,14 @@ function calculateDegreesObj (data) {
   let right = data.right
   let angles = {
     left: {
-      shoulderX: calculateDegreesFormatted(left.ShCo, left.CoEl) + 90,
+      shoulderX: calculateDegreesFormatted(left.ShCo, left.CoEl),
       //shoulderX is for the frontal 2d side movement. z is for depth that might be added later on
       //   shoulderZ:,
-      elbow: calculateDegreesFormatted(left.ShCw, left.CwWr) + 90
+      elbow: calculateDegreesFormatted(left.ShCw, left.CwWr)
     },
     right: {
-      shoulderX: calculateDegreesFormatted(right.ShCo, right.CoEl) + 90,
-      elbow: calculateDegreesFormatted(right.ShCw, right.CwWr) + 90
+      shoulderX: calculateDegreesFormatted(right.ShCo, right.CoEl),
+      elbow: calculateDegreesFormatted(right.ShCw, right.CwWr)
     }
   }
   return angles
@@ -67,20 +67,23 @@ function calculateDegreesFormatted (opposite, adjacent) {
   return formatDegree(calculateDegrees(opposite, adjacent))
 }
 function calculateDegrees (opposite, adjacent) {
-  return Math.round((Math.atan(opposite / adjacent) * 180) / Math.PI)
+  return Math.round((Math.atan(opposite / adjacent) * 180) / Math.PI) + 90
 }
 
+//fixme: iets gaat hier fout bij het formatteren
 function formatDegree (degree) {
-  let format = ""
-  if (degree < 100) {
-    format = "x" + degree
+  if (degree < 0) {
+    return 0
   }
+  let format = ''
   if (degree < 10) {
-    format = "xx" + degree
+    format = 'xx' + degree
+  } else if (degree < 100) {
+    format = 'x' + degree
   } else {
     format = degree
   }
-  console.log(format);
+  console.log(format)
   return format
 }
 
