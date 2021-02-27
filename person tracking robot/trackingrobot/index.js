@@ -21,7 +21,7 @@ io.on('connection', socket => {
     let data = { ...msg }
     let angles = calc.handleCalculations(data)
     // console.log(angles)
-	// mySerial.writeToPort("#ls:"+angles.left.shoulderX)
+	mySerial.writeToPort("#ls:"+angles.left.shoulderX)
   })
   socket.on('disconnect', reason => {
   })

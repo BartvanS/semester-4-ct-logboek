@@ -33,7 +33,7 @@ void loop()
       }
       command[charCount + 1] = '\0';
 
-String leftShoulderReceived = "\0";
+      String leftShoulderReceived = "\0";
       if (command[3] != 'x') {
         leftShoulderReceived.concat(command[3]);
       }
@@ -44,6 +44,8 @@ String leftShoulderReceived = "\0";
         leftShoulderReceived.concat(command[5]);
       }
       int leftShoulderReceivedInt = leftShoulderReceived.toInt();
+      //!! serial.print crashes the arduino 🤷‍
+//      Serial.println(leftShoulderReceivedInt);
       myservo.write(leftShoulderReceivedInt);
     }
   }

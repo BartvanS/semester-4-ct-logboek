@@ -1,6 +1,5 @@
 const SerialPort = require('serialport')
-const calc = require('./calculations.js')
-
+const Readline = require('@serialport/parser-readline')
 // Open errors will be emitted as an error event
 module.exports = class Serial {
   constructor (portPath) {
@@ -13,6 +12,18 @@ module.exports = class Serial {
     this.port.on('error', function (err) {
       console.log('Error: ', err.message)
     })
+
+    this.port.on('readable', function () {
+      console.log('Data:', port.read())
+    })
+
+    // Switches the port into "flowing mode"
+    this.port.on('data', function (data) {
+      console.log('Data:', data)
+    })
+
+    // Pipe the data into another stream (like a parser or standard out)
+    const lineStream = this.port.pipe(new Readline())
   }
 
   writeToPort (message) {
