@@ -1,3 +1,9 @@
+//abbreviations are based on the view from the front of a person
+//up down is noted as for plans i tend to include side view of a person so forward backwards
+let abbreviations = {
+  SX: 'shoulderX', //shoulder up down
+  EX: 'elbowX' //elbow up down
+}
 function handleCalculations (data) {
   let left = data.left
   //convergence is the point where the shoulder y axis comes across the x axis of the other joints(elbow, wrist)
@@ -49,16 +55,15 @@ function calculateSides (data) {
 function calculateDegreesObj (data) {
   let left = data.left
   let right = data.right
+
   let angles = {
     left: {
-      shoulderX: calculateDegreesFormatted(left.ShCo, left.CoEl),
-      //shoulderX is for the frontal 2d side movement. z is for depth that might be added later on
-      //   shoulderZ:,
-      elbow: calculateDegreesFormatted(left.ShCw, left.CwWr)
+      SX: calculateDegreesFormatted(left.ShCo, left.CoEl),
+      EX: calculateDegreesFormatted(left.ShCw, left.CwWr)
     },
     right: {
-      shoulderX: calculateDegreesFormatted(right.ShCo, right.CoEl),
-      elbow: calculateDegreesFormatted(right.ShCw, right.CwWr)
+      SX: calculateDegreesFormatted(right.ShCo, right.CoEl),
+      EX: calculateDegreesFormatted(right.ShCw, right.CwWr)
     }
   }
   return angles
@@ -83,11 +88,34 @@ function formatDegree (degree) {
   } else {
     format = degree
   }
-  console.log(format)
   return format
+}
+let startByte = '#'
+let endByte = '%'
+let delimiter = '|'
+let doValue = ':'
+function generateProtocolMessages (angles) {
+  let msgs = {
+    left: startByte + 'l|',
+    right: startByte + 'r|'
+  }
+
+  //angles containing the objects left and right
+  Object.keys(angles).forEach(key => {
+    //loop through the values. Look at the variable abbreviations for more info
+    let joint = angles[key]
+    Object.keys(joint).forEach(abbr => {
+      msgs[key] += abbr + ':' + joint[abbr] + delimiter
+    })
+  })
+  Object.keys(msgs).forEach(key => {
+    msgs[key] += endByte
+  })
+  console.log(msgs)
 }
 
 module.exports = {
   handleCalculations: data => handleCalculations(data),
-  formatDegree: degree => formatDegree(degree)
+  formatDegree: degree => formatDegree(degree),
+  generateProtocolMessages: angles => generateProtocolMessages(angles)
 }

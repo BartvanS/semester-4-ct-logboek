@@ -2,9 +2,9 @@ const express = require('express')
 const app = express()
 const appPort = 3000
 const path = require('path')
+const calc = require('./modules/calculations.js')
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
-const calc = require('./modules/calculations.js')
 const Serial = require("./modules/serial") 
 const mySerial = new Serial("/dev/ttyS8")
 app.use(express.static('public'))
@@ -20,8 +20,9 @@ io.on('connection', socket => {
   socket.on('frontcam', msg => {
     let data = { ...msg }
     let angles = calc.handleCalculations(data)
-    // console.log(angles)
-	mySerial.writeToPort("#ls:"+angles.left.shoulderX)
+	calc.generateProtocolMessages(angles)
+	mySerial.writeToPort()
+	// mySerial.writeToPort("#ls:"+angles.left.shoulderX)
   })
   socket.on('disconnect', reason => {
   })
