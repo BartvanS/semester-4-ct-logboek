@@ -93,25 +93,37 @@ function formatDegree (degree) {
 let startByte = '#'
 let endByte = '%'
 let delimiter = '|'
-let doValue = ':'
 function generateProtocolMessages (angles) {
-  let msgs = {
-    left: startByte + 'l|',
-    right: startByte + 'r|'
+  if (angles == undefined || angles == null) {
+    return -1
   }
-
-  //angles containing the objects left and right
+  let message = startByte
   Object.keys(angles).forEach(key => {
-    //loop through the values. Look at the variable abbreviations for more info
     let joint = angles[key]
     Object.keys(joint).forEach(abbr => {
-      msgs[key] += abbr + ':' + joint[abbr] + delimiter
+      message += joint[abbr] + delimiter
     })
   })
-  Object.keys(msgs).forEach(key => {
-    msgs[key] += endByte
-  })
-  console.log(msgs)
+  message += endByte
+  return message
+  //   let msgs = {
+  //     left: startByte + 'l',
+  //     right: startByte + 'r'
+  //   }
+
+  //   //angles containing the objects left and right
+  //   Object.keys(angles).forEach(key => {
+  //     //loop through the values. Look at the variable abbreviations for more info
+  //     let joint = angles[key]
+  //     Object.keys(joint).forEach(abbr => {
+  //     //   msgs[key] += abbr + ':' + joint[abbr] + delimiter
+  //       msgs[key] += joint[abbr] + delimiter
+  //     })
+  //   })
+  //   Object.keys(msgs).forEach(key => {
+  //     msgs[key] += endByte
+  //   })
+  //   return msgs
 }
 
 module.exports = {
