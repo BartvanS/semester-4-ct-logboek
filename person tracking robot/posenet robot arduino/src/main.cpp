@@ -58,11 +58,12 @@ void loop()
 			for (byte i = 0; i < amountOfValues; i++) //-1 as we already have read the start char and dont want to do anything with the stopchar
 			{
 				int value = atoi(data[i]);
-				if (i == 0)
+				//for prototype rightside is left
+				if (i == 2)
 				{
 					servoLSX.write(value);
 				}
-				if (i == 1)
+				if (i == 3)
 				{
 					servoLE.write(value);
 				}
