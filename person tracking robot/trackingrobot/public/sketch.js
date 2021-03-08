@@ -25,7 +25,8 @@ function setup () {
   poseNet = ml5.poseNet(
     video,
     {
-      detectionType: 'single'
+      detectionType: 'single',
+      multiplyer: 1.0,
       //   minConfidence: 0.9,
       //   scoreThreshold: 0.9
     },

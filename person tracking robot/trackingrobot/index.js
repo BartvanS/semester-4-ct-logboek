@@ -6,7 +6,7 @@ const calc = require('./modules/calculations.js')
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 const Serial = require('./modules/serial')
-const mySerial = new Serial('/dev/ttyS8')
+const mySerial = new Serial('/dev/ttyS3')
 app.use(express.static('public'))
 app.get('/', (req, res) => {
   res.sendFile(path.resolve('public/posenet.html'))

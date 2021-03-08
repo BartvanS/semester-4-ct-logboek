@@ -4,7 +4,7 @@ const Readline = require('@serialport/parser-readline')
 module.exports = class Serial {
   constructor (portPath) {
     this.portPath = portPath
-    this.port = new SerialPort('/dev/ttyS8', error => {
+    this.port = new SerialPort(this.portPath, error => {
       if (error) {
         return console.log('Error: ', error.message)
       }

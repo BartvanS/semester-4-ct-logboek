@@ -55,25 +55,25 @@ function calculateSides (data) {
 function calculateDegreesObj (data) {
   let left = data.left
   let right = data.right
-let lsx = calculateDegrees(left.ShCo, left.CoEl)
-let rsx = calculateDegrees(right.ShCo, right.CoEl)
+let lsx = calculateDegree(left.ShCo, left.CoEl)
+let rsx = calculateDegree(right.ShCo, right.CoEl)
 
   let angles = {
     left: {
       SX: formatDegree(lsx),
-      EX: formatDegree(calculateDegrees(left.ShCw, left.CwWr) + lsx)  //these 90 need to be checked
+      EX: formatDegree(calculateDegree(left.ShCw, left.CwWr) + lsx)  //these 90 need to be checked
     },
     right: {
       SX: formatDegree(rsx),
-      EX: formatDegree(calculateDegrees(right.ShCw, right.CwWr) - rsx )
+      EX: formatDegree(calculateDegree(right.ShCw, right.CwWr) - rsx )
     }
   }
   return angles
 }
 function calculateDegreesFormatted (opposite, adjacent) {
-  return formatDegree(calculateDegrees(opposite, adjacent))
+  return formatDegree(calculateDegree(opposite, adjacent))
 }
-function calculateDegrees (opposite, adjacent) {
+function calculateDegree (opposite, adjacent) {
   return Math.round((Math.atan(opposite / adjacent) * 180) / Math.PI) + 90
 }
 
