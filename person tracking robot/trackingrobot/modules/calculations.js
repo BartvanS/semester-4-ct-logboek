@@ -12,6 +12,9 @@ function handleCalculations(data) {
   let right = data.right;
   right.convergenceElbow = { x: right.shoulder.x, y: right.elbow.y };
   right.convergenceWrist = { x: right.elbow.x, y: right.wrist.y };
+
+
+  
   let sides = calculateSides(data);
   let angles = calculateDegreesObj(sides);
   return angles;
