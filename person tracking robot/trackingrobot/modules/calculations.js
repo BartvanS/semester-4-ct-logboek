@@ -8,11 +8,10 @@ function handleCalculations(data) {
   let left = data.left;
   //convergence is the point where the shoulder y axis comes across the x axis of the other joints(elbow, wrist)
   left.convergenceElbow = { x: left.shoulder.x, y: left.elbow.y };
-  left.convergenceWrist = { x: left.shoulder.x, y: left.wrist.y };
+  left.convergenceWrist = { x: left.elbow.x, y: left.wrist.y };
   let right = data.right;
   right.convergenceElbow = { x: right.shoulder.x, y: right.elbow.y };
-  right.convergenceWrist = { x: right.shoulder.x, y: right.wrist.y };
-
+  right.convergenceWrist = { x: right.elbow.x, y: right.wrist.y };
   let sides = calculateSides(data);
   let angles = calculateDegreesObj(sides);
   return angles;
@@ -55,24 +54,24 @@ function calculateSides(data) {
 function calculateDegreesObj(data) {
   let left = data.left;
   let right = data.right;
-  let lsx = calculateDegree(left.ShCo, left.CoEl);
-  let rsx = calculateDegree(right.ShCo, right.CoEl);
+  let lsx = calculateDegree(left.ShCo, left.CoEl) + 90;
+  let rsx = calculateDegree(right.ShCo, right.CoEl) + 90;
   //math.abs to make sure there are no negative degrees
   let angles = {
     left: {
       SX: formatDegree(lsx),
-      EX: formatDegree(Math.abs(lsx - calculateDegree(left.ShCw, left.CwWr))), //these 90 need to be checked
+      EX: formatDegree(Math.abs(90 - lsx - calculateDegree(left.ShCw, left.CwWr))), 
     },
     right: {
       SX: formatDegree(rsx),
-      EX: formatDegree(Math.abs(rsx - calculateDegree(right.ShCw, right.CwWr))),
+      EX: formatDegree(Math.abs(90 - (rsx - calculateDegree(right.ShCw, right.CwWr)))),
     },
   };
   console.log(angles);
   return angles;
 }
 function calculateDegree(opposite, adjacent) {
-  return Math.round((Math.atan(opposite / adjacent) * 180) / Math.PI) + 90;
+  return Math.round((Math.atan(opposite / adjacent) * 180) / Math.PI);
 }
 function formatDegree(degree) {
   if (degree < 0) {
