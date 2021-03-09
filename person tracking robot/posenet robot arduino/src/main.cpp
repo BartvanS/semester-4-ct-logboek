@@ -2,33 +2,39 @@
 
 #define BUZZER_PIN 8
 
-#define SERVO_LEFT_SHOULDER_X 9
-#define SERVO_LEFT_ELBOW 10
+#define SERVO_LEFT_SHOULDER_X 10
+#define SERVO_LEFT_SHOULDER_Z 11
+#define SERVO_LEFT_ELBOW 9
 #include <Servo.h>
 Servo servoLSX;
+Servo servoLSZ;
 Servo servoLE;
 void setup()
 {
 	servoLSX.attach(SERVO_LEFT_SHOULDER_X);
 	servoLE.attach(SERVO_LEFT_ELBOW);
+	servoLSZ.attach(SERVO_LEFT_SHOULDER_Z);
 	Serial.begin(9600); //send and receive at 9600 baud
 	pinMode(BUZZER_PIN, OUTPUT);
 	digitalWrite(BUZZER_PIN, HIGH);
 	delay(100);
 	digitalWrite(BUZZER_PIN, LOW);
 	servoLSX.write(0);
+	servoLSZ.write(0);
 	servoLE.write(0);
 }
-const int charCount = 18;												//message where arm has 2 servos is 18 char long ("#xxx|xxx|xxx|xxx|%")
+const int charCount = 24;												//message where arm has 2 servos is 18 char long ("#xxx|xxx|xxx|xxx|%")
 const int numberLenghtOfSingleValue = 4;								//amount of numbers as chars in a message + 1 for delimiter
 const int amountOfValues = (charCount - 2) / numberLenghtOfSingleValue; // -2 as start and stop byte
 char command[charCount];
 char s;
 //+1 for null terminator
-char data[4][numberLenghtOfSingleValue + 1] = {
+char data[6][numberLenghtOfSingleValue + 1] = {
 	{"\0"}, // left shoulder x
+	{"\0"}, // left shoulder z
 	{"\0"}, //left elbow
 	{"\0"}, // right shoulder x
+	{"\0"}, // right shoulder z
 	{"\0"}	//right shoulder
 };
 int pos = 0;
@@ -59,11 +65,23 @@ void loop()
 			{
 				int value = atoi(data[i]);
 				//for prototype rightside is left
-				if (i == 2)
+				if (i == 0)
 				{
 					servoLSX.write(value);
 				}
-				if (i == 3)
+				if (i == 1)
+				{
+					//flip direction
+					if (value == 180)
+					{
+						servoLSZ.write(0);
+					}
+					else
+					{
+						servoLSZ.write(180);
+					}
+				}
+				if (i == 2)
 				{
 					servoLE.write(value);
 				}

@@ -19,10 +19,10 @@ function handleCalculations(data) {
     right: "xx0",
   };
   if (left.wrist.y < left.shoulder.y) {
-    shoulderZData.left = "x90";
+    shoulderZData.left = "180";
   }
   if (right.wrist.y < right.shoulder.y) {
-    shoulderZData.right = "x90";
+    shoulderZData.right = "180";
   }
   let angles = calculateDegreesObj(sides, shoulderZData);
   return angles;
