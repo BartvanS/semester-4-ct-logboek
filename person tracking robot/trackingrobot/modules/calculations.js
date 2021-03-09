@@ -12,11 +12,19 @@ function handleCalculations(data) {
   let right = data.right;
   right.convergenceElbow = { x: right.shoulder.x, y: right.elbow.y };
   right.convergenceWrist = { x: right.elbow.x, y: right.wrist.y };
-
-
-  
   let sides = calculateSides(data);
-  let angles = calculateDegreesObj(sides);
+  //z is the direction the arm is turned. for now that is up or down. in future it may be forward positions
+  let shoulderZData = {
+    left: 0,
+    right: 0,
+  };
+  if (left.wrist.y < left.shoulder.y) {
+    shoulderZData.left = 90;
+  }
+  if (right.wrist.y < right.shoulder.y) {
+    shoulderZData.right = 90;
+  }
+  let angles = calculateDegreesObj(sides, shoulderZData);
   return angles;
 }
 
@@ -54,23 +62,28 @@ function calculateSides(data) {
   };
   return sides;
 }
-function calculateDegreesObj(data) {
-  let left = data.left;
-  let right = data.right;
+function calculateDegreesObj(sides, shoulderZData) {
+  let left = sides.left;
+  let right = sides.right;
   let lsx = calculateDegree(left.ShCo, left.CoEl) + 90;
   let rsx = calculateDegree(right.ShCo, right.CoEl) + 90;
   //math.abs to make sure there are no negative degrees
   let angles = {
     left: {
       SX: formatDegree(lsx),
-      EX: formatDegree(Math.abs(90 - lsx - calculateDegree(left.ShCw, left.CwWr))), 
+      SZ: shoulderZData.left,
+      EX: formatDegree(
+        Math.abs(90 - lsx - calculateDegree(left.ShCw, left.CwWr))
+      ),
     },
     right: {
       SX: formatDegree(rsx),
-      EX: formatDegree(Math.abs(90 - (rsx - calculateDegree(right.ShCw, right.CwWr)))),
+      SZ: shoulderZData.right,
+      EX: formatDegree(
+        Math.abs(90 - (rsx - calculateDegree(right.ShCw, right.CwWr)))
+      ),
     },
   };
-  console.log(angles);
   return angles;
 }
 function calculateDegree(opposite, adjacent) {

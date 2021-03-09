@@ -20,8 +20,8 @@ io.on('connection', socket => {
   socket.on('frontcam', msg => {
     let data = { ...msg }
     let angles = calc.handleCalculations(data)
-    mySerial.writeToPort(calc.generateProtocolMessages(angles))
-    // mySerial.writeToPort("#ls:"+angles.left.shoulderX)
+    console.log(angles);
+    // mySerial.writeToPort(calc.generateProtocolMessages(angles))
   })
   socket.on('disconnect', reason => {})
 })
