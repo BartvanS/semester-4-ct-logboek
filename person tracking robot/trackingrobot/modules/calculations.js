@@ -15,14 +15,14 @@ function handleCalculations(data) {
   let sides = calculateSides(data);
   //z is the direction the arm is turned. for now that is up or down. in future it may be forward positions
   let shoulderZData = {
-    left: 0,
-    right: 0,
+    left: "xx0",
+    right: "xx0",
   };
   if (left.wrist.y < left.shoulder.y) {
-    shoulderZData.left = 90;
+    shoulderZData.left = "x90";
   }
   if (right.wrist.y < right.shoulder.y) {
-    shoulderZData.right = 90;
+    shoulderZData.right = "x90";
   }
   let angles = calculateDegreesObj(sides, shoulderZData);
   return angles;
