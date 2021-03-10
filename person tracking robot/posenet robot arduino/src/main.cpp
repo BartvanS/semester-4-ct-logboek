@@ -60,7 +60,7 @@ void loop()
 				}
 				data[i][count] = '\0';
 			}
-
+//test git
 			for (byte i = 0; i < amountOfValues; i++) //-1 as we already have read the start char and dont want to do anything with the stopchar
 			{
 				int value = atoi(data[i]);
