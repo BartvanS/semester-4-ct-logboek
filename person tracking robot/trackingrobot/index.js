@@ -21,7 +21,6 @@ io.on('connection', socket => {
     let data = { ...msg }
     let angles = calc.handleCalculations(data)
     let message = calc.generateProtocolMessages(angles);
-    console.log(message);
     mySerial.writeToPort(message)
   })
   socket.on('disconnect', reason => {})

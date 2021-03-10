@@ -31,7 +31,6 @@ module.exports = class Serial {
       if (err) {
         return console.log('Error on write: ', err.message)
       }
-      // console.log('written message: ' + message)
     })
   }
 }
